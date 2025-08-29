@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>weblite khusus adek</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  overflow: hidden;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url('https://akhmadmudzakir4-create.github.io/countdown-project/adek.jpg') no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top:0; left:0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(5px);
+  z-index: 0;
+}
+
+.countdown-container {
+  position: relative;
+  background: rgba(0,0,0,0.6);
+  padding: 50px 70px;
+  border-radius: 35px;
+  text-align: center;
+  box-shadow: 0 10px 50px rgba(255,255,255,0.6);
+  z-index: 2;
+  overflow: hidden;
+}
+
+.countdown-container::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2), transparent 70%);
+  animation: glowMove 8s linear infinite;
+  z-index: 0;
+}
+
+@keyframes glowMove {
+  0% { transform: rotate(0deg) translateX(0); }
+  50% { transform: rotate(180deg) translateX(50px); }
+  100% { transform: rotate(360deg) translateX(0); }
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 35px;
+  letter-spacing: 2px;
+  text-shadow: 0 3px 20px rgba(0,0,0,0.7);
+  position: relative;
+  z-index: 1;
+}
+
+.time-boxes {
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.time-box {
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 30px 35px;
+  border-radius: 30px;
+  min-width: 90px;
+  font-weight: bold;
+  font-size: 2rem;
+  box-shadow: 0 5px 25px rgba(255,255,255,0.5);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Animasi denyut smooth + glow */
+@keyframes pulseSmooth {
+  0% { transform: scale(1); box-shadow: 0 5px 25px rgba(255,255,255,0.5); }
+  50% { transform: scale(1.15); box-shadow: 0 0 35px 8px rgba(255,255,255,0.9); }
+  100% { transform: scale(1); box-shadow: 0 5px 25px rgba(255,255,255,0.5); }
+}
+
+.pulse-smooth {
+  animation: pulseSmooth 0.5s ease-in-out;
+}
+
+.time-box span {
+  display: block;
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+/* Tombol musik Spotify dengan equalizer */
+.mute-button {
+  margin-top: 25px;
+  padding: 12px 25px;
+  background: #1DB954; /* Hijau Spotify */
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.mute-button:hover { background: #1ed760; }
+
+.equalizer {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 20px;
+}
+
+.equalizer div {
+  width: 4px;
+  background: #fff;
+  border-radius: 2px;
+  transition: height 0.1s;
+}
+
+#particles, #confetti {
+  position: absolute;
+  top:0; left:0;
+  width: 100%; height: 100%;
+  z-index:1;
+  pointer-events: none;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(0.8);}
+  100% { opacity: 1; transform: scale(1);}
+}
+
+.fade-in {
+  animation: fadeIn 1s ease forwards;
+}
+
+.countdown-container.fade-out {
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<canvas id="confetti"></canvas>
+
+<div class="countdown-container">
+  <h1>COUNTDOWN ULTAH ADEK &#127874;</h1>
+  <div class="time-boxes">
+    <div class="time-box" id="days">0<span>Hari</span></div>
+    <div class="time-box" id="hours">0<span>Jam</span></div>
+    <div class="time-box" id="minutes">0<span>Menit</span></div>
+    <div class="time-box" id="seconds">0<span>Detik</span></div>
+  </div>
+  <button class="mute-button" id="musicBtn">
+    <span id="musicLabel">Play Musik</span>
+    <div class="equalizer" id="equalizer">
+      <div></div><div></div><div></div><div></div><div></div>
+    </div>
+  </button>
+</div>
+
+<audio id="bgMusic" src="https://akhmadmudzakir4-create.github.io/countdown-project/audio1.mp3" loop></audio>
+<audio id="surpriseSound" src="https://akhmadmudzakir4-create.github.io/countdown-project/surprise.mp3" preload="auto"></audio>
+
+<script>
+// Countdown
+var countDownDate = new Date("Sep 14, 2025 00:01:00").getTime();
+var bgMusic = document.getElementById("bgMusic");
+var musicBtn = document.getElementById("musicBtn");
+var surpriseSound = document.getElementById("surpriseSound");
+
+// Tombol musik default Play
+var musicLabel = document.getElementById("musicLabel");
+musicLabel.textContent = "Play Musik";
+
+// Simpan nilai sebelumnya untuk trigger animasi kotak
+var prevDays, prevHours, prevMinutes, prevSeconds;
+
+// Animasi denyut smooth
+function animateBox(box) {
+  box.classList.add('pulse-smooth');
+  setTimeout(() => { box.classList.remove('pulse-smooth'); }, 500);
+}
+
+function updateCountdown(){
+  var now = new Date().getTime();
+  var distance = countDownDate - now;
+
+  var days = Math.floor(distance / (1000*60*60*24));
+  var hours = Math.floor((distance % (1000*60*60*24)) / (1000*60*60));
+  var minutes = Math.floor((distance % (1000*60*60)) / (1000*60));
+  var seconds = Math.floor((distance % (1000*60)) / 1000);
+
+  if(days !== prevDays){
+    document.getElementById("days").innerHTML = days + "<span>Hari</span>";
+    animateBox(document.getElementById("days"));
+    prevDays = days;
+  }
+  if(hours !== prevHours){
+    document.getElementById("hours").innerHTML = hours + "<span>Jam</span>";
+    animateBox(document.getElementById("hours"));
+    prevHours = hours;
+  }
+  if(minutes !== prevMinutes){
+    document.getElementById("minutes").innerHTML = minutes + "<span>Menit</span>";
+    animateBox(document.getElementById("minutes"));
+    prevMinutes = minutes;
+  }
+  if(seconds !== prevSeconds){
+    document.getElementById("seconds").innerHTML = seconds + "<span>Detik</span>";
+    animateBox(document.getElementById("seconds"));
+    prevSeconds = seconds;
+  }
+
+  if(distance < 0){
+    clearInterval(timer);
+    var container = document.querySelector(".countdown-container");
+    container.classList.add("fade-out");
+
+    setTimeout(function(){
+      surpriseSound.play().catch(()=>{});
+      container.innerHTML = "<h1 class='fade-in'>Waktunya kejutan ðŸŽ‰</h1>";
+      launchConfetti();
+      setTimeout(function(){
+        window.location.href = "https://akhmadmudzakir4-create.github.io/countdown-project/natasya.html";
+      },2000);
+    },1000);
+  }
+}
+
+var timer = setInterval(updateCountdown,1000);
+updateCountdown();
+
+// Partikel
+var canvas = document.getElementById('particles');
+var ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+var particles=[];
+for(var i=0;i<100;i++){
+  particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*3+1, dx:(Math.random()-0.5)*0.5, dy:(Math.random()-0.5)*0.5});
+}
+function drawParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(var i=0;i<particles.length;i++){
+    var p = particles[i];
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle="rgba(255,255,255,0.7)";
+    ctx.fill();
+    p.x+=p.dx; p.y+=p.dy;
+    if(p.x<0||p.x>canvas.width)p.dx*=-1;
+    if(p.y<0||p.y>canvas.height)p.dy*=-1;
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+window.addEventListener('resize',()=>{canvas.width=window.innerWidth; canvas.height=window.innerHeight;});
+
+// Confetti
+var confCanvas = document.getElementById('confetti');
+var confCtx = confCanvas.getContext('2d');
+confCanvas.width = window.innerWidth;
+confCanvas.height = window.innerHeight;
+var confettis=[];
+
+function launchConfetti(){
+  for(var i=0;i<150;i++){
+    confettis.push({
+      x: confCanvas.width/2,
+      y: confCanvas.height/2,
+      r: Math.random()*6+4,
+      color: 'hsl('+Math.random()*360+',100%,50%)',
+      dx: (Math.random()-0.5)*10,
+      dy: (Math.random()-0.5)*10
+    });
+  }
+  animateConfetti();
+}
+
+function animateConfetti(){
+  confCtx.clearRect(0,0,confCanvas.width,confCanvas.height);
+  for(var i=0;i<confettis.length;i++){
+    var c = confettis[i];
+    confCtx.beginPath();
+    confCtx.arc(c.x,c.y,c.r,0,Math.PI*2);
+    confCtx.fillStyle = c.color;
+    confCtx.fill();
+    c.x+=c.dx; c.y+=c.dy; c.dy+=0.1;
+  }
+  confettis = confettis.filter(c => c.y < confCanvas.height + 10);
+  if(confettis.length>0) requestAnimationFrame(animateConfetti);
+}
+window.addEventListener('resize',()=>{confCanvas.width=window.innerWidth; confCanvas.height=window.innerHeight;});
+
+// Equalizer Spotify
+var equalizer = document.getElementById("equalizer");
+var bars = equalizer.querySelectorAll("div");
+var eqInterval;
+
+function startEqualizer() {
+  eqInterval = setInterval(()=>{
+    bars.forEach(bar => {
+      bar.style.height = (Math.random()*20 + 5) + "px";
+    });
+  },100);
+}
+
+function stopEqualizer() {
+  clearInterval(eqInterval);
+  bars.forEach(bar => bar.style.height = "5px");
+}
+
+// Tombol musik toggle
+musicBtn.addEventListener("click", function(){
+    if(bgMusic.paused){
+        bgMusic.play();
+        musicLabel.textContent = "Pause Musik";
+        startEqualizer();
+    } else {
+        bgMusic.pause();
+        musicLabel.textContent = "Play Musik";
+        stopEqualizer();
+    }
+});
+
+// Optional: Autoplay musik saat load
+bgMusic.play().then(()=>{
+    musicLabel.textContent = "Pause Musik";
+    startEqualizer();
+}).catch(()=>{
+    musicLabel.textContent = "Play Musik";
+    stopEqualizer();
+});
+</script>
+</body>
+</html>
